@@ -3,7 +3,7 @@ name: Build ShotRecipe APK
 on:
   workflow_dispatch:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
@@ -11,33 +11,34 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Extract ShotRecipe source
         run: |
           rm -rf build_src
           mkdir -p build_src
           unzip -q ShotRecipe_v2_source.zip -d build_src
+          test -f build_src/ShotRecipe_v2/build.gradle
+          test -f build_src/ShotRecipe_v2/app/build.gradle
           test -f build_src/ShotRecipe_v2/settings.gradle
 
       - name: Set up Java 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: "17"
 
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
 
       - name: Install Android SDK packages
         run: |
-          yes | sdkmanager --licenses >/dev/null || true
           sdkmanager "platforms;android-35" "build-tools;35.0.0"
 
       - name: Set up Gradle 8.10.2
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v6
         with:
-          gradle-version: '8.10.2'
+          gradle-version: "8.10.2"
 
       - name: Build debug APK
         working-directory: build_src/ShotRecipe_v2
